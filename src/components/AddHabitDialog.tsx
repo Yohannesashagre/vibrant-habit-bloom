@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,7 @@ export const AddHabitDialog: React.FC<AddHabitDialogProps> = ({
     name: '',
     description: '',
     category: '',
-    frequency: 'daily' as const,
+    frequency: 'daily' as 'daily' | 'weekly' | 'monthly',
     targetValue: '',
     unit: '',
     isActive: true

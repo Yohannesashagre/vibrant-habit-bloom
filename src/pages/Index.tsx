@@ -1,14 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, TrendingUp, Settings, Moon, Sun, Palette } from 'lucide-react';
+import { Plus, Calendar, TrendingUp, Settings, Moon, Sun, Palette, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HabitCard } from '@/components/HabitCard';
 import { AddHabitDialog } from '@/components/AddHabitDialog';
 import { StatsOverview } from '@/components/StatsOverview';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { AuthDialog } from '@/components/AuthDialog';
+import { Analytics } from '@/components/Analytics';
+import { CalendarView } from '@/components/CalendarView';
 import { useHabits } from '@/hooks/useHabits';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -16,6 +19,7 @@ const Index = () => {
   const [isAddHabitOpen, setIsAddHabitOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('habits');
   const { habits, addHabit, toggleHabit, deleteHabit, getStreakCount } = useHabits();
   const { currentTheme, isDarkMode, toggleDarkMode } = useTheme();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -132,100 +136,132 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-8">
+      <main className="container mx-auto px-4 py-6">
         {/* Stats Overview */}
-        <StatsOverview 
-          totalHabits={habits.length}
-          completedToday={completedToday}
-          totalToday={todayHabits.length}
-          longestStreak={Math.max(...habits.map(h => getStreakCount(h.id)), 0)}
-        />
-
-        {/* Quick Actions */}
-        <div className="flex flex-wrap gap-4">
-          <Button 
-            onClick={() => setIsAddHabitOpen(true)}
-            className={`${currentTheme.primary} hover:scale-105 transition-all duration-300 shadow-lg`}
-            size="lg"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Add New Habit
-          </Button>
-          <Button variant="outline" size="lg" className="hover:scale-105 transition-all duration-300">
-            <Calendar className="w-5 h-5 mr-2" />
-            View Calendar
-          </Button>
-          <Button variant="outline" size="lg" className="hover:scale-105 transition-all duration-300">
-            <TrendingUp className="w-5 h-5 mr-2" />
-            Analytics
-          </Button>
+        <div className="mb-8">
+          <StatsOverview 
+            totalHabits={habits.length}
+            completedToday={completedToday}
+            totalToday={todayHabits.length}
+            longestStreak={Math.max(...habits.map(h => getStreakCount(h.id)), 0)}
+          />
         </div>
 
-        {/* Today's Progress */}
-        <Card className="bg-gradient-to-r from-card to-card/50 border-0 shadow-xl">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>Today's Habits</span>
-              <Badge variant="secondary" className="text-lg px-3 py-1">
-                {completedToday}/{todayHabits.length}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {todayHabits.length === 0 ? (
-              <div className="text-center py-12">
-                <TrendingUp className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No habits yet</h3>
-                <p className="text-muted-foreground mb-6">
-                  Start building better habits today!
-                </p>
-                <Button 
-                  onClick={() => setIsAddHabitOpen(true)}
-                  className={currentTheme.primary}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Your First Habit
-                </Button>
-              </div>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2">
-                {todayHabits.map((habit) => (
-                  <HabitCard
-                    key={habit.id}
-                    habit={habit}
-                    onToggle={toggleHabit}
-                    onDelete={deleteHabit}
-                    streak={getStreakCount(habit.id)}
-                    theme={currentTheme}
-                  />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Main Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="habits" className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Habits
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              Calendar
+            </TabsTrigger>
+          </TabsList>
 
-        {/* All Habits */}
-        {habits.length > todayHabits.length && (
-          <Card className="bg-card/50 border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle>All Habits</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                {habits.map((habit) => (
-                  <HabitCard
-                    key={habit.id}
-                    habit={habit}
-                    onToggle={toggleHabit}
-                    onDelete={deleteHabit}
-                    streak={getStreakCount(habit.id)}
-                    theme={currentTheme}
-                  />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+          {/* Habits Tab */}
+          <TabsContent value="habits" className="space-y-6">
+            {/* Quick Actions */}
+            <div className="flex flex-wrap gap-4">
+              <Button 
+                onClick={() => setIsAddHabitOpen(true)}
+                className={`${currentTheme.primary} hover:scale-105 transition-all duration-300 shadow-lg`}
+                size="lg"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add New Habit
+              </Button>
+            </div>
+
+            {/* Today's Progress */}
+            <Card className="bg-gradient-to-r from-card to-card/50 border-0 shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Today's Habits</span>
+                  <Badge variant="secondary" className="text-lg px-3 py-1">
+                    {completedToday}/{todayHabits.length}
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {todayHabits.length === 0 ? (
+                  <div className="text-center py-12">
+                    <TrendingUp className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No habits yet</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Start building better habits today!
+                    </p>
+                    <Button 
+                      onClick={() => setIsAddHabitOpen(true)}
+                      className={currentTheme.primary}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Your First Habit
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {todayHabits.map((habit) => (
+                      <HabitCard
+                        key={habit.id}
+                        habit={habit}
+                        onToggle={toggleHabit}
+                        onDelete={deleteHabit}
+                        streak={getStreakCount(habit.id)}
+                        theme={currentTheme}
+                      />
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* All Habits */}
+            {habits.length > todayHabits.length && (
+              <Card className="bg-card/50 border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle>All Habits</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {habits.map((habit) => (
+                      <HabitCard
+                        key={habit.id}
+                        habit={habit}
+                        onToggle={toggleHabit}
+                        onDelete={deleteHabit}
+                        streak={getStreakCount(habit.id)}
+                        theme={currentTheme}
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <Analytics 
+              habits={habits}
+              getStreakCount={getStreakCount}
+              theme={currentTheme}
+            />
+          </TabsContent>
+
+          {/* Calendar Tab */}
+          <TabsContent value="calendar">
+            <CalendarView 
+              habits={habits}
+              theme={currentTheme}
+            />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Dialogs */}
