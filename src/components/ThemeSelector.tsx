@@ -17,6 +17,24 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
 }) => {
   const { themes, currentTheme, setTheme } = useTheme();
 
+  const getThemeColorClass = (themeColor: string) => {
+    if (themeColor.includes('blue')) return 'bg-blue-500';
+    if (themeColor.includes('orange') || themeColor.includes('pink')) return 'bg-orange-500';
+    if (themeColor.includes('green') || themeColor.includes('emerald')) return 'bg-green-500';
+    if (themeColor.includes('purple') || themeColor.includes('violet')) return 'bg-purple-500';
+    if (themeColor.includes('slate')) return 'bg-slate-600';
+    return 'bg-blue-500';
+  };
+
+  const getSecondaryColorClass = (themeColor: string) => {
+    if (themeColor.includes('cyan') || themeColor.includes('blue')) return 'bg-cyan-500';
+    if (themeColor.includes('pink') || themeColor.includes('orange')) return 'bg-pink-500';
+    if (themeColor.includes('emerald') || themeColor.includes('green')) return 'bg-emerald-500';
+    if (themeColor.includes('violet') || themeColor.includes('purple')) return 'bg-violet-500';
+    if (themeColor.includes('blue') && themeColor.includes('slate')) return 'bg-blue-500';
+    return 'bg-purple-500';
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg bg-card/95 backdrop-blur-sm border-0 shadow-2xl">
@@ -39,9 +57,9 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="flex space-x-1">
-                      <div className={`w-4 h-4 rounded-full ${theme.primary.replace('bg-gradient-to-r', 'bg-blue-500')}`}></div>
-                      <div className={`w-4 h-4 rounded-full ${theme.secondary.replace('bg-gradient-to-r', 'bg-purple-500')}`}></div>
-                      <div className={`w-4 h-4 rounded-full ${theme.accent.replace('bg-gradient-to-r', 'bg-pink-500')}`}></div>
+                      <div className={`w-4 h-4 rounded-full ${getThemeColorClass(theme.primary)}`}></div>
+                      <div className={`w-4 h-4 rounded-full ${getSecondaryColorClass(theme.secondary)}`}></div>
+                      <div className={`w-4 h-4 rounded-full ${getThemeColorClass(theme.accent)}`}></div>
                     </div>
                     <div>
                       <h3 className="font-semibold">{theme.name}</h3>
