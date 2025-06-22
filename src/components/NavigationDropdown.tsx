@@ -24,6 +24,9 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({
   const location = useLocation();
 
   const getViewLabel = (view: string) => {
+    if (location.pathname === '/profile') return 'Profile';
+    if (location.pathname === '/settings') return 'Settings';
+    
     switch (view) {
       case 'habits': return 'Habits';
       case 'analytics': return 'Analytics';
@@ -33,6 +36,9 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({
   };
 
   const getViewIcon = (view: string) => {
+    if (location.pathname === '/profile') return <User className="w-4 h-4" />;
+    if (location.pathname === '/settings') return <Settings className="w-4 h-4" />;
+    
     switch (view) {
       case 'habits': return <TrendingUp className="w-4 h-4" />;
       case 'analytics': return <BarChart3 className="w-4 h-4" />;
@@ -49,10 +55,15 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({
     navigate('/settings');
   };
 
+  const handleHomeClick = (view: string) => {
+    navigate('/');
+    onViewChange(view);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="min-w-[140px] justify-between bg-card/80 backdrop-blur-sm">
+        <Button variant="outline" className="min-w-[140px] justify-between bg-card/80 backdrop-blur-sm border-border/50">
           <div className="flex items-center gap-2">
             {getViewIcon(currentView)}
             {getViewLabel(currentView)}
@@ -60,24 +71,24 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({
           <ChevronDown className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48 bg-popover/95 backdrop-blur-sm">
+      <DropdownMenuContent align="start" className="w-48 bg-popover/95 backdrop-blur-sm border-border/50 z-50">
         <DropdownMenuItem 
-          onClick={() => onViewChange('habits')}
-          className={currentView === 'habits' ? 'bg-accent' : ''}
+          onClick={() => handleHomeClick('habits')}
+          className={currentView === 'habits' && location.pathname === '/' ? 'bg-accent' : ''}
         >
           <TrendingUp className="w-4 h-4 mr-2" />
           Habits
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={() => onViewChange('analytics')}
-          className={currentView === 'analytics' ? 'bg-accent' : ''}
+          onClick={() => handleHomeClick('analytics')}
+          className={currentView === 'analytics' && location.pathname === '/' ? 'bg-accent' : ''}
         >
           <BarChart3 className="w-4 h-4 mr-2" />
           Analytics
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={() => onViewChange('calendar')}
-          className={currentView === 'calendar' ? 'bg-accent' : ''}
+          onClick={() => handleHomeClick('calendar')}
+          className={currentView === 'calendar' && location.pathname === '/' ? 'bg-accent' : ''}
         >
           <Calendar className="w-4 h-4 mr-2" />
           Calendar

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useTheme } from '@/hooks/useTheme';
 import { MainHeader } from '@/components/MainHeader';
+import { NavigationDropdown } from '@/components/NavigationDropdown';
 
 interface UserProfile {
   name: string;
@@ -98,6 +99,14 @@ const Profile = () => {
       />
 
       <main className="container mx-auto px-4 py-6 max-w-4xl">
+        {/* Navigation Dropdown */}
+        <div className="mb-6">
+          <NavigationDropdown
+            currentView=""
+            onViewChange={() => {}}
+          />
+        </div>
+
         <div className="mb-6">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Profile Settings

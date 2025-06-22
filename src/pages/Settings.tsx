@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTheme } from '@/hooks/useTheme';
 import { MainHeader } from '@/components/MainHeader';
+import { NavigationDropdown } from '@/components/NavigationDropdown';
 
 interface Settings {
   notifications: boolean;
@@ -76,6 +77,14 @@ const Settings = () => {
       />
 
       <main className="container mx-auto px-4 py-6 max-w-4xl">
+        {/* Navigation Dropdown */}
+        <div className="mb-6">
+          <NavigationDropdown
+            currentView=""
+            onViewChange={() => {}}
+          />
+        </div>
+
         <div className="mb-6">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Settings
