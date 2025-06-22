@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { TrendingUp, Palette, Moon, Sun } from 'lucide-react';
+import { TrendingUp, Palette, Moon, Sun, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Theme } from '@/types/habit';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface MainHeaderProps {
   currentTheme: Theme;
@@ -19,11 +20,22 @@ export const MainHeader: React.FC<MainHeaderProps> = ({
   onToggleDarkMode,
   onLogout
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
+  const handleHomeClick = () => {
+    navigate('/');
+  };
+
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/80 border-b border-border/50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={handleHomeClick}>
             <div className={`w-10 h-10 ${currentTheme.accent} rounded-xl flex items-center justify-center`}>
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
@@ -51,6 +63,14 @@ export const MainHeader: React.FC<MainHeaderProps> = ({
               className="hover:bg-primary/10"
             >
               {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleProfileClick}
+              className={`hover:bg-primary/10 ${location.pathname === '/profile' ? 'bg-primary/20' : ''}`}
+            >
+              <User className="w-5 h-5" />
             </Button>
             <Button
               variant="ghost"
