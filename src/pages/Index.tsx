@@ -1,9 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, TrendingUp, BarChart3 } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LandingPage } from '@/components/LandingPage';
 import { MainHeader } from '@/components/MainHeader';
+import { NavigationDropdown } from '@/components/NavigationDropdown';
 import { QuickActions } from '@/components/QuickActions';
 import { TodaysHabits } from '@/components/TodaysHabits';
 import { AllHabits } from '@/components/AllHabits';
@@ -20,7 +19,7 @@ const Index = () => {
   const [isAddHabitOpen, setIsAddHabitOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('habits');
+  const [activeView, setActiveView] = useState('habits');
   const { habits, addHabit, toggleHabit, deleteHabit, getStreakCount } = useHabits();
   const { currentTheme, isDarkMode, toggleDarkMode } = useTheme();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -60,46 +59,11 @@ const Index = () => {
     );
   }
 
-  return (
-    <div className={`min-h-screen transition-all duration-500 ${currentTheme.background}`}>
-      <MainHeader
-        currentTheme={currentTheme}
-        isDarkMode={isDarkMode}
-        onThemeSelectorOpen={() => setIsThemeSelectorOpen(true)}
-        onToggleDarkMode={toggleDarkMode}
-        onLogout={handleLogout}
-      />
-
-      <main className="container mx-auto px-4 py-6">
-        {/* Stats Overview */}
-        <div className="mb-8">
-          <StatsOverview 
-            totalHabits={habits.length}
-            completedToday={completedToday}
-            totalToday={todayHabits.length}
-            longestStreak={Math.max(...habits.map(h => getStreakCount(h.id)), 0)}
-          />
-        </div>
-
-        {/* Main Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="habits" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              Habits
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="calendar" className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              Calendar
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Habits Tab */}
-          <TabsContent value="habits" className="space-y-6">
+  const renderContent = () => {
+    switch (activeView) {
+      case 'habits':
+        return (
+          <div className="space-y-6">
             <QuickActions
               currentTheme={currentTheme}
               onAddHabit={() => setIsAddHabitOpen(true)}
@@ -124,25 +88,59 @@ const Index = () => {
                 getStreakCount={getStreakCount}
               />
             )}
-          </TabsContent>
+          </div>
+        );
+      case 'analytics':
+        return (
+          <Analytics 
+            habits={habits}
+            getStreakCount={getStreakCount}
+            theme={currentTheme}
+          />
+        );
+      case 'calendar':
+        return (
+          <CalendarView 
+            habits={habits}
+            theme={currentTheme}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
-          {/* Analytics Tab */}
-          <TabsContent value="analytics">
-            <Analytics 
-              habits={habits}
-              getStreakCount={getStreakCount}
-              theme={currentTheme}
-            />
-          </TabsContent>
+  return (
+    <div className={`min-h-screen transition-all duration-500 ${currentTheme.background}`}>
+      <MainHeader
+        currentTheme={currentTheme}
+        isDarkMode={isDarkMode}
+        onThemeSelectorOpen={() => setIsThemeSelectorOpen(true)}
+        onToggleDarkMode={toggleDarkMode}
+        onLogout={handleLogout}
+      />
 
-          {/* Calendar Tab */}
-          <TabsContent value="calendar">
-            <CalendarView 
-              habits={habits}
-              theme={currentTheme}
-            />
-          </TabsContent>
-        </Tabs>
+      <main className="container mx-auto px-4 py-6">
+        {/* Stats Overview */}
+        <div className="mb-8">
+          <StatsOverview 
+            totalHabits={habits.length}
+            completedToday={completedToday}
+            totalToday={todayHabits.length}
+            longestStreak={Math.max(...habits.map(h => getStreakCount(h.id)), 0)}
+          />
+        </div>
+
+        {/* Navigation Dropdown */}
+        <div className="mb-6">
+          <NavigationDropdown
+            currentView={activeView}
+            onViewChange={setActiveView}
+          />
+        </div>
+
+        {/* Content */}
+        {renderContent()}
       </main>
 
       {/* Dialogs */}

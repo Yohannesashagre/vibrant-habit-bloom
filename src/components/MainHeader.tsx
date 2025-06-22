@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TrendingUp, Palette, Moon, Sun, User } from 'lucide-react';
+import { TrendingUp, Palette, Moon, Sun, User, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Theme } from '@/types/habit';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -25,6 +25,10 @@ export const MainHeader: React.FC<MainHeaderProps> = ({
 
   const handleProfileClick = () => {
     navigate('/profile');
+  };
+
+  const handleSettingsClick = () => {
+    navigate('/settings');
   };
 
   const handleHomeClick = () => {
@@ -63,6 +67,14 @@ export const MainHeader: React.FC<MainHeaderProps> = ({
               className="hover:bg-primary/10"
             >
               {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSettingsClick}
+              className={`hover:bg-primary/10 ${location.pathname === '/settings' ? 'bg-primary/20' : ''}`}
+            >
+              <Settings className="w-5 h-5" />
             </Button>
             <Button
               variant="ghost"
